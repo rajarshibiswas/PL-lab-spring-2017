@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cstdlib>
+#include <cstdio>
 #include <vector>
+#include <string>
 #include "common.h"
 #include "scanner.h"
 
