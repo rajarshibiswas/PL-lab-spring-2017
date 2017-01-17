@@ -1,12 +1,12 @@
 
-Interpreter: interpreter.o scanner.o
-	g++ interpreter.o scanner.o -o Interpreter
+Interpreter: src/interpreter.o src/scanner.o
+	g++ src/interpreter.o src/scanner.o -o Interpreter
 
-interpreter.o: interpreter.cpp common.h
-	g++ -std=c++11 -c interpreter.cpp
+interpreter.o: src/interpreter.cpp src/common.h
+	g++ -std=c++11 -c src/interpreter.cpp
 
-scanner.o:  scanner.cpp scanner.h common.h
-	g++ -std=c++11 -c scanner.cpp
+scanner.o:  src/scanner.cpp src/scanner.h src/common.h
+	g++ -std=c++11 -c src/scanner.cpp
 clean:
-	rm *.o Interpreter
+	rm src/*.o Interpreter
 
