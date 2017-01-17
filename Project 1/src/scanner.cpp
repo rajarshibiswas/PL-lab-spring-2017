@@ -1,3 +1,12 @@
+/*
+ * CSE 6341
+ * Project: 1
+ * File	  : scanner.cpp
+ * Author : Rajarshi Biswas
+ * Email  : biswas.91@osu.edu
+ *
+ */
+
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
@@ -199,6 +208,7 @@ int scanner () {
 				goto done;
 				break;
 			case ERROR:
+				// Error in parsing. Exit.
 				cout << "ERROR: Invalid token " << t.value.error;
 				goto out;
 				break;

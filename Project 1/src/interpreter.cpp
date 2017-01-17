@@ -1,3 +1,12 @@
+/*
+ * CSE 6341
+ * Project: 1
+ * File	  : interpreter.cpp
+ * Author : Rajarshi Biswas
+ * Email  : biswas.91@osu.edu
+ *
+ */
+
 #include <iostream>
 #include <cstdlib>
 #include <vector>
