@@ -36,8 +36,19 @@ typedef struct token {
 	token_value value;
 } token;
 
-// The scanner API. Parses characters from the stdin and generates
-// token. 
-int scanner (void);
+// The scanner class.
+class Scanner {
+    private:
+        // Used to store a unparsed char.
+        bool store_flag;
+        char store_char;
+        // Used to store all the atom values.
+        vector<string> literal_atom_list;
+        vector<int> numeric_atom_list;
+        bool end_of_token(char input);
+    public:
+        int init();
+        token getNextToken();
+};
 
 #endif

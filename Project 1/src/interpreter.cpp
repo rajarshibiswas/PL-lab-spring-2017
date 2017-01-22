@@ -14,8 +14,10 @@
 #include "scanner.h"
 
 int main (int argc, char *argv[]) {
+    // Make a scanner object to parset the input.
+    Scanner scan;
     int error = SUCCESS;
     // Calls the scanner to parse the input and generates token.
-    error = scanner();
+    error = scan.init();
     return error;
 }
