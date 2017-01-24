@@ -1,6 +1,6 @@
 /*
  * CSE 6341
- * Project: 1
+ * Project: 2
  * File	  : scanner.h
  * Author : Rajarshi Biswas
  * Email  : biswas.91@osu.edu
@@ -19,7 +19,9 @@ typedef enum token_type {
     OPEN_PAREN,
     CLOSING_PAREN,
     ERROR,
-    END_OF_FILE
+    END_OF_FILE,
+    NIL,
+    NAN // No value
 } token_type;
 
 // Different values that a token can take.

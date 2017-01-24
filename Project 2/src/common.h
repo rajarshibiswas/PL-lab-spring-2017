@@ -1,6 +1,6 @@
 /*
  * CSE 6341
- * Project: 1
+ * Project: 2
  * File	  : common.h
  * Author : Rajarshi Biswas
  * Email  : biswas.91@osu.edu
@@ -11,5 +11,6 @@
 
 #define SUCCESS             0
 #define INTERPRETER_ERROR   1
+#define PARSING_ERROR       2
 
-#endif 
+#endif
