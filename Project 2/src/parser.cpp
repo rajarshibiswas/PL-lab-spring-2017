@@ -14,10 +14,6 @@
 #include "scanner.h"
 #include "parser.h"
 
-//token EMPTY_NODE = {NAN};
-//token NIL_NODE = {NIL};
-
-/*
 static tree* newNode() {
     tree *node = new tree;
     node->left = NULL;
@@ -25,7 +21,7 @@ static tree* newNode() {
 
     return (node);
 }
-*/
+
 static tree* parseExpr(Scanner *scan) {
     int error = SUCCESS;
 
@@ -33,46 +29,49 @@ static tree* parseExpr(Scanner *scan) {
         scan->getCurrent().type == NUMERIC_ATOM ||
         scan->getCurrent().type == NIL) {
 
-            // Create a node
-            tree *node = new tree;
+            // Create a node for the leaf nodes
+            tree *node = newNode();
             node->val = scan->getCurrent();
-            node->right = NULL;
-            node->left = NULL;
+
             scan->moveToNext(); // Consume the atom
 
             return node;
 
     } else if (scan->getCurrent().type == OPEN_PAREN) {
         // List of expression. Creat an empty node
-        tree *node = new tree;
-        tree *h = node;
-        node->val.type = NAN;
-        node->right = NULL;
-        node->left = NULL;
+        tree *node = newNode();
+        node->val.type = EMPTY;
 
-        scan->moveToNext();
+        // Keep track of the current node, so that we can
+        // return it to the caller.
+        tree *head = node;
+
+        scan->moveToNext(); // Consume the Open parenthesis
 
         while ((scan->getCurrent()).type != CLOSING_PAREN) {
+            // Recursively call till we find a closeing parenthesis.
             if (node->val.type == NIL) {
-                node->val.type = NAN;
+                // This node will be used, so change the value
+                node->val.type = EMPTY;
             }
-
+            // Hang any found node in the left side.
             node->left = parseExpr(scan);
 
-            tree *temp = new tree;
-            temp->left = NULL;
-            temp->right = NULL;
-            temp->val.type = NIL;
 
+            tree *temp = newNode();
+            temp->val.type = NIL;
             node->right = temp;
             node = node->right;
         }
-
-        // Special case for handling ()
         scan->moveToNext(); // Consume closing parenthesis.
 
-        return h;
+        return head;
     } else {
+        // Handle parser errors
+        cout << "ERROR0:";
+        cout << "\nParsing Error at char: < " << scan->global_char << " > """ ;
+        cout << "\nLine number: " << scan->line_number;
+        cout << "\nChar number: " << scan->char_count;
         error = PARSING_ERROR;
         return NULL;
     }

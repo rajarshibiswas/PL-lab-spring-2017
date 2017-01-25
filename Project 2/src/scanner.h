@@ -21,7 +21,7 @@ typedef enum token_type {
     ERROR,
     END_OF_FILE,
     NIL,
-    NAN // No value
+    EMPTY // No value
 } token_type;
 
 // Different values that a token can take.
@@ -57,8 +57,12 @@ class Scanner {
         bool end_of_token(char input);
         int checkToken(token t);
         token getNextToken();
+        char scanGetChar();
 
     public:
+        char global_char;
+        int line_number;
+        int char_count;
         int init();
         int moveToNext();
         token getCurrent();

@@ -34,6 +34,12 @@ bool Scanner::end_of_token (char input) {
 
 }
 
+char Scanner::scanGetChar() {
+    char input = getchar();
+    this->char_count++;
+    return (input);
+}
+
 /*
  * Reads stdin and generates token.
  *
@@ -51,7 +57,7 @@ token Scanner::getNextToken () {
     if (store_flag == true) {
         input = store_char;
     } else { // Else read from stdin.
-        input = getchar();
+        input = scanGetChar();
     }
     store_flag = false;
 
@@ -64,9 +70,14 @@ token Scanner::getNextToken () {
 
     // Consume all the white space, carriage return and line feed
     while (input == 32 ||  input == 13 || input == 10) {
-        input = getchar();
+        if (input == 10) {
+            this->line_number++;
+            this->char_count = 0;
+        }
+        input = scanGetChar();
     }
 
+    this->global_char = input;
     if (input == EOF) {
         // Check for the EOF.
         t =  END_OF_FILE;
@@ -83,19 +94,19 @@ token Scanner::getNextToken () {
         // Check literal atom.
         literal_atom = "";
         literal_atom += input;
-        input = getchar();
+        input = scanGetChar();
         while (isupper(input) || isdigit(input)) {
             literal_atom = literal_atom + input;
-            input = getchar();
+            input = scanGetChar();
         }
 
         if (end_of_token(input) != true) {
             // Literal atom error.
             literal_atom += input;
-            input = getchar();
+            input = scanGetChar();
             while (end_of_token(input) != true) {
                 literal_atom += input;
-                input = getchar();
+                input = scanGetChar();
             }
             error_token = literal_atom;
             t =  ERROR;
@@ -113,19 +124,19 @@ token Scanner::getNextToken () {
         // Check numeric atom.
         numeric_atom = "";
         numeric_atom += input;
-        input = getchar();
+        input = scanGetChar();
         while (isdigit(input)) {
             numeric_atom += input;
-            input = getchar();
+            input = scanGetChar();
         }
 
         if (end_of_token (input) != true) {
             // Numeric atom error.
             numeric_atom += input;
-            input = getchar();
+            input = scanGetChar();
             while (end_of_token(input) != true) {
                 numeric_atom += input;
-                input = getchar();
+                input = scanGetChar();
             }
             error_token = numeric_atom;
             t = ERROR;
@@ -143,10 +154,10 @@ token Scanner::getNextToken () {
         // Default case. No matching tag.
         error_token = "";
         error_token += input;
-        input = getchar();
+        input = scanGetChar();
         while (end_of_token(input) != true) {
             error_token += input;
-            input = getchar();
+            input = scanGetChar();
         }
         t = ERROR;
         goto end;
@@ -223,6 +234,8 @@ int Scanner::init() {
     num_oepn_paran = 0;
     num_closing_paran = 0;
     store_flag = false;
+    line_number = 1;
+    char_count = 0;
 
     current = getNextToken();
     error = checkToken(current);
