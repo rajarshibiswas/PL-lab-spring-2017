@@ -60,9 +60,12 @@ class Scanner {
         char scanGetChar();
 
     public:
+        // Some Error Tracking Variables.
+        // TODO: Make it private
         char global_char;
         int line_number;
         int char_count;
+        // Global Functions.
         int init();
         int moveToNext();
         token getCurrent();

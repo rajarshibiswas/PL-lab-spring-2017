@@ -14,6 +14,12 @@
 #include "scanner.h"
 #include "parser.h"
 
+using namespace std;
+
+/*
+ * Create an empty node for the parse tree.
+ * Returns a new new node.
+ */
 static tree* newNode() {
     tree *node = new tree;
     node->left = NULL;
@@ -22,6 +28,11 @@ static tree* newNode() {
     return (node);
 }
 
+/*
+ * Parses the expression.
+ * scan - The current scanner
+ * Returns the head node of the parsed expression.
+ */
 static tree* parseExpr(Scanner *scan) {
     int error = SUCCESS;
 
@@ -47,6 +58,11 @@ static tree* parseExpr(Scanner *scan) {
         tree *head = node;
 
         scan->moveToNext(); // Consume the Open parenthesis
+        if (scan->getCurrent().type == ERROR) {
+            // If an error occured after an open parenthesis
+            // i.e. the remaining expression is wrong.
+            goto error;
+        }
 
         while ((scan->getCurrent()).type != CLOSING_PAREN) {
             // Recursively call till we find a closeing parenthesis.
@@ -55,8 +71,12 @@ static tree* parseExpr(Scanner *scan) {
                 node->val.type = EMPTY;
             }
             // Hang any found node in the left side.
-            node->left = parseExpr(scan);
-
+            tree *left_side_tree_root = parseExpr(scan);
+            if (left_side_tree_root == NULL) {
+                // Some error has occured
+                goto error;
+            }
+            node->left = left_side_tree_root;
 
             tree *temp = newNode();
             temp->val.type = NIL;
@@ -64,21 +84,21 @@ static tree* parseExpr(Scanner *scan) {
             node = node->right;
         }
         scan->moveToNext(); // Consume closing parenthesis.
-
         return head;
     } else {
-        // Handle parser errors
-        cout << "ERROR0:";
-        cout << "\nParsing Error at char: < " << scan->global_char << " > """ ;
-        cout << "\nLine number: " << scan->line_number;
-        cout << "\nChar number: " << scan->char_count;
-        error = PARSING_ERROR;
-        return NULL;
+        goto error;
     }
+error:
+    return (NULL);
 }
 
-void parse_tree_print(tree *cur_node) {
+/*
+ * Prints the parse tree.
+ * cur_node - The root node of the parse tree.
+ */
+static void parse_tree_print(tree *cur_node) {
     if (cur_node == NULL) {
+        // Just a safecheck.
         cout << "NIL";
         return;
     } else if (cur_node->left == NULL && cur_node->right == NULL) {
@@ -94,20 +114,49 @@ void parse_tree_print(tree *cur_node) {
     } else {
             cout << "(";
             parse_tree_print(cur_node->left);
-            cout << ". ";
+            cout << " . ";
             parse_tree_print(cur_node->right);
             cout << ")";
     }
     return;
 }
 
+/*
+ * Prints information about the parse error.
+ * scan - The current scanner.
+ */
+static void parseError(Scanner *scan) {
+    cout << "ERROR:";
+    if (scan->getCurrent().type == ERROR) {
+        cout << " Synatx error while parsing invalid token '" << scan->getCurrent().value.error<<"'";
+        scan->char_count = scan->char_count - scan->getCurrent().value.error.length();
+    } else {
+        cout << " Synatx error while parsing token '";
+        if (scan->global_char == EOF) {
+            cout << "EOF'";
+        } else {
+            cout << scan->global_char << "'" ;
+        }
+
+    }
+    //cout << "\nAt line number: " << scan->line_number;
+    //cout << ", at starting char number: " << scan->char_count;
+    cout << "\n";
+}
+
+/*
+ * Starts the parsing and builds a parse tree.
+ * scan - The current scanner.
+ * Returns SUCCESS in case of success, otherwise an error.
+ */
 int parseStart(Scanner *scan) {
     int error = SUCCESS;
     do {
-        tree *parse_tree = new tree;
-        // Pass an empty tree.
+        tree *parse_tree;
         parse_tree = parseExpr(scan);
         if (parse_tree == NULL) {
+            // Parsing error happened.
+            parseError(scan);
             break;
         }
         //clecout << "out of parseExpr\n";

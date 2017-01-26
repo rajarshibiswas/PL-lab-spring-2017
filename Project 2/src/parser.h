@@ -12,12 +12,12 @@
 
 using namespace std;
 
-int parseStart(Scanner *scan);
 typedef struct tree {
     token val;
     tree *right;
     tree *left;
 } tree;
 
+int parseStart(Scanner *scan);
 
 #endif

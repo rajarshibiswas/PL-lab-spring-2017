@@ -34,6 +34,10 @@ bool Scanner::end_of_token (char input) {
 
 }
 
+/*
+ * Scan and returns the next character.
+ * Also, keep a Character count for bookkeeping.
+ */
 char Scanner::scanGetChar() {
     char input = getchar();
     this->char_count++;
@@ -65,6 +69,7 @@ token Scanner::getNextToken () {
         // 1. Empty file or,
         // 2. We have scanned all the input.
         t = END_OF_FILE;
+        this->global_char = input;
         goto end;
     }
 
@@ -183,6 +188,10 @@ end:
     return (result_token);
 }
 
+/*
+ * Check the current found token for sanity.
+ * Also, some bookkeeping about the tokens.
+ */
 int Scanner::checkToken(token t) {
     int error = SUCCESS;
 
@@ -203,8 +212,6 @@ int Scanner::checkToken(token t) {
             goto done;
             break;
         case ERROR:
-            // Error in parsing. Exit.
-            cout << "ERROR: Invalid token " << t.value.error;
             error = INTERPRETER_ERROR;
             goto done;
             break;
@@ -217,6 +224,12 @@ done:
 
 }
 
+// Get the current token
+token Scanner::getCurrent() {
+    return current;
+}
+
+// Get the next token
 int Scanner::moveToNext() {
     int error = SUCCESS;
 
@@ -226,6 +239,7 @@ int Scanner::moveToNext() {
     return (error);
 }
 
+// Init the scanner. and get the first token
 int Scanner::init() {
     // Initialize all the class variables.
     unsigned int error = SUCCESS;
@@ -244,10 +258,7 @@ done:
     return (error);
 }
 
-token Scanner::getCurrent() {
-    return current;
-}
-
+// Print information about the tokens parsed
 void Scanner::printTokens() {
     int total_sum = 0;
     // Prints the necessary information.

@@ -18,12 +18,13 @@ int main (int argc, char *argv[]) {
     // Make a scanner object to parset the input.
     Scanner scan;
     int error = SUCCESS;
-    // Calls the scanner to parse the input and generates token.
+
+    // Initilize the Scanner.
     error = scan.init();
+    // Start the pasring.
     parseStart(&scan);
 
-    cout << "\n";
     // print the tokens
-    scan.printTokens();
-    return error;
+    //scan.printTokens();
+    return (error);
 }
