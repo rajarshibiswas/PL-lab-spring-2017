@@ -152,6 +152,7 @@ static void parseError(Scanner *scan) {
  */
 int parseStart(Scanner *scan) {
     int error = SUCCESS;
+    init_eval();
     do {
         tree *parse_tree;
         parse_tree = parseExpr(scan);
@@ -163,7 +164,9 @@ int parseStart(Scanner *scan) {
         //clecout << "out of parseExpr\n";
         parse_tree_print(parse_tree);
         parse_tree = eval(parse_tree);
-        cout << parse_tree->val.value.numeric;
+    //cout << "\nTHE result : "<<parse_tree->val.value.numeric << "\n";
+        print_eval_tree(parse_tree);
+
         // Evaluate this parse tree now.
 
         // Free the parse tree.

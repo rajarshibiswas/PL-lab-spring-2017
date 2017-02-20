@@ -1,1 +1,1 @@
-(XYZ ( xyz
+(COND ((LESS 7 4) 2) (4 (PLUS 4 6)))

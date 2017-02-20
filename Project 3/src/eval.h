@@ -13,5 +13,6 @@
 using namespace std;
 
 tree* eval(tree *parse_tree);
-
+int init_eval();
+void print_eval_tree(tree* s);
  #endif
