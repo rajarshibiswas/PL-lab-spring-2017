@@ -12,4 +12,5 @@
 #define SUCCESS             0
 #define INTERPRETER_ERROR   1
 #define PARSING_ERROR       2
+#define EVAL_ERROR          3
 #endif

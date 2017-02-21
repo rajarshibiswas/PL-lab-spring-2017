@@ -19,7 +19,6 @@
 
 std::map<string,int> function_list;
 
-
 static int singleNode(tree *s) {
 
     if (s == NULL)
@@ -41,7 +40,6 @@ static int numericNode(tree *s) {
 
 
 static int length(tree *s) {
-    cout << "counnting len\n";
     if (singleNode(s)) {
         if (s->val.type ==  NIL) {
             return 0;
@@ -55,7 +53,9 @@ static int length(tree *s) {
 }
 
 static tree* car(tree *s) {
-
+    if (singleNode(s)) {
+        cout << "ERROR: CAR can't be done on a ATOM";
+    }
     if (s->left == NULL) {
         return NULL;
     }
@@ -64,22 +64,19 @@ static tree* car(tree *s) {
 }
 
 static tree* cdr(tree *s) {
-     // TODO: Do I need to check both the nodes?
+    if (singleNode(s)) {
+        cout << "ERROR: CDR can't be done on a ATOM";
+    }
     if (s->right == NULL) {
-            return NULL;
+        return NULL;
     }
     return (s->right);
 }
 
 static tree* cons(tree *s1, tree* s2) {
-    cout << "I am consting";
     tree *s = newNode();
     s->left = s1;
     s->right = s2;
-    if (singleNode (s2) == 1)
-        cout << "\nm single \n";
-    if (singleNode (s1) == 1)
-        cout << "\nm single \n";
     return s;
 }
 
@@ -94,10 +91,8 @@ static tree* lisp_atom(tree *s1) {
 }
 
 static tree* checkInt(tree *s1) {
-    //cout << "Checking int\n";
     tree *temp = newNode();
     if (s1->val.type == NUMERIC_ATOM && s1->right == NULL && s1->left == NULL) {
-        //cout << "\nGot numerica Atom";
         temp->val.type = T;
         return temp;
     } else {
@@ -107,25 +102,29 @@ static tree* checkInt(tree *s1) {
 }
 
 static tree* checkNull(tree *s1) {
+
     tree *s = newNode();
     if (s1->val.type == NIL && s1->right == NULL && s1->left == NULL) {
-        //cout << "\nGot numerica Atom";
         s->val.type = T;
         return s;
-    } else {
+    } else if (s1->val.type == LITERAL_ATOM && s1->val.value.literal.compare("NIL") == 0) {
+        s->val.type = T;
+        return s;
+    }  else {
         s->val.type = NIL;
         return s;
     }
 }
 
-static tree* eq(tree *s1, tree *s2) {
+static tree* lisp_eq(tree *s1, tree *s2) {
     tree *s = newNode();
-
-    if ((singleNode(s1) != 0) ||
-        (singleNode(s2) != 0)) {
+    if ((singleNode(s1) == 0) ||
+        (singleNode(s2) == 0)) {
+        cout << "ERROR: One of the arguments for EQ is not an ATOM.";
         return NULL;
     }
 
+    // Check for literal atom
     if (s1->val.type == LITERAL_ATOM && s2->val.type == LITERAL_ATOM) {
         if (s1->val.value.literal.compare(s2->val.value.literal) == 0) {
             s->val.type = T;
@@ -134,12 +133,12 @@ static tree* eq(tree *s1, tree *s2) {
         }
 
     } else if (s1->val.type == NUMERIC_ATOM && s2->val.type == NUMERIC_ATOM) {
+        // Check for numeric atom
         if (s1->val.value.numeric == s2->val.value.numeric) {
             s->val.type = T;
         } else {
             s->val.type = NIL;
         }
-
     } else {
         s->val.type = NIL;
 
@@ -149,9 +148,11 @@ static tree* eq(tree *s1, tree *s2) {
 
 static tree* lisp_plus(tree *s1, tree *s2) {
     if (singleNode(s1) == 0 || singleNode(s1) == 0) {
+        cout << "Error: One of the arguments for PLUS is not Numeric ATOM.";
         return NULL;
     }
     if ((numericNode(s1) == 0) || (numericNode(s2) == 0)) {
+            cout << "Error: One of the arguments for PLUS is not Numeric ATOM.";
             return NULL;
     }
     tree *s = newNode();
@@ -163,9 +164,11 @@ static tree* lisp_plus(tree *s1, tree *s2) {
 
 static tree* lisp_minus(tree *s1, tree *s2) {
     if ((singleNode(s1) == 0) || (singleNode(s2) == 0)) {
+        cout << "Error: One of the arguments for MINUS is not Numeric ATOM.";
         return NULL;
     }
     if ((numericNode(s1) == 0) || (numericNode(s2) == 0)) {
+        cout << "Error: One of the arguments for MINUS is not Numeric ATOM.";
         return NULL;
     }
     tree *s = newNode();
@@ -177,9 +180,11 @@ static tree* lisp_minus(tree *s1, tree *s2) {
 
 static tree* lisp_times(tree *s1, tree *s2) {
     if ((singleNode(s1) == 0) || (singleNode(s2) == 0)) {
+        cout << "Error: One of the arguments for TIMES is not Numeric ATOM.";
         return NULL;
     }
     if ((numericNode(s1) == 0) || (numericNode(s2) == 0)) {
+        cout << "Error: One of the arguments for TIMES is not Numeric ATOM.";
         return NULL;
     }
 
@@ -189,37 +194,13 @@ static tree* lisp_times(tree *s1, tree *s2) {
     return s;
 }
 
-static tree *lisp_cond(tree *s) {
-    while (s->val.type != NIL) {
-        tree *s1 = s->left;
-        if (length(s1) != 2) {
-            return NULL;
-        }
-        tree *b = s1->left;
-        tree *e = s1->right->left;
-        tree *temp = eval(b);
-        if (temp == NULL) {
-            // b undefined
-            return NULL;
-        }
-        if (temp->val.type != NIL) {
-            temp = eval(e);
-            if (temp == NULL) {
-                // n undefined
-                return NULL;
-            }
-            return temp;
-        }
-        s = s->right;
-    }
-    return (NULL);
-}
-
 static tree* lisp_less(tree *s1, tree *s2) {
     if ((singleNode(s1) == 0) || (singleNode(s2) == 0)) {
+        cout << "Error: One of the arguments for LESS is not Numeric ATOM.";
         return NULL;
     }
     if ((numericNode(s1) == 0) || (numericNode(s2) == 0)) {
+        cout << "Error: One of the arguments for LESS is not Numeric ATOM.";
         return NULL;
     }
 
@@ -234,9 +215,11 @@ static tree* lisp_less(tree *s1, tree *s2) {
 
 static tree* lisp_greater(tree *s1, tree *s2) {
     if ((singleNode(s1) == 0) || (singleNode(s2) == 0)) {
+        cout << "Error: One of the arguments for GREATER is not Numeric ATOM.";
         return NULL;
     }
     if ((numericNode(s1) == 0) || (numericNode(s2) == 0)) {
+        cout << "Error: One of the arguments for GREATER is not Numeric ATOM.";
         return NULL;
     }
 
@@ -250,21 +233,66 @@ static tree* lisp_greater(tree *s1, tree *s2) {
 }
 
 
+static tree *lisp_cond(tree *s) {
+    while (s->val.type != NIL) {
+        tree *s1 = s->left;
+        if (length(s1) != 2) {
+            cout << "ERROR: COND should have two arguments.";
+            return NULL;
+        }
+        tree *b = s1->left;
+        tree *e = s1->right->left;
+        tree *temp = eval(b);
+        if (temp == NULL) {
+            //cout << " Undefined expression while doing COND.";
+            return NULL;
+        }
+
+        if (temp->val.type == NIL ||
+            (temp->val.type == LITERAL_ATOM &&
+            temp->val.value.literal.compare("NIL") == 0)) {
+                // Check for NIL
+                goto next;
+        } else {
+            temp = eval(e);
+            if (temp == NULL) {
+                //cout << " Undefined expression while doing COND.";
+                return NULL;
+            }
+            return temp;
+        }
+next: // Get the next condition.
+        s = s->right;
+    }
+    cout << "ERROR: Undefined expression while doing COND.";
+    return (NULL);
+}
+
+
+
 tree* eval(tree *parse_tree) {
     int len;
+    int fun_num;
     tree *output, *s1, *s2, *temp, *carnode;
     string carnode_val;
 
-    // Tree contains only one litteral atom T
-    if (parse_tree->val.type == T) {
-        output = parse_tree;
-        goto end;
+    // Tree contains only one litteral atom T or NIL
+    if (parse_tree->val.type == NIL ||
+        parse_tree->val.type == T ||
+        (parse_tree->val.type == EMPTY && singleNode(parse_tree))) {
+            // Just some special checks.
+            if (parse_tree->val.type == EMPTY) {
+                parse_tree->val.type = NIL;
+            }
+            output = parse_tree;
+            goto end;
     }
-
-    // contains only the literal atom NIL
-    if (parse_tree->val.type == NIL) {
-        output = parse_tree;
-        goto end;
+    if (parse_tree->val.type == LITERAL_ATOM) {
+        if ((parse_tree->val.value.literal.compare("T") == 0) ||
+            (parse_tree->val.value.literal.compare("NIL") == 0)) {
+                output = parse_tree;
+                goto end;
+        }
     }
 
     // Given a binary tree, we have only one numeric atom.
@@ -275,7 +303,12 @@ tree* eval(tree *parse_tree) {
         goto end;
     }
 
-    // Other Atoms eval is undefined.
+    len = length(parse_tree);
+    if (len < 2) {
+        output = NULL;
+        cout << "Error: The S expression is not supported.";
+        goto end;
+    }
 
     // Get the car node value.
     carnode = car(parse_tree);
@@ -283,20 +316,33 @@ tree* eval(tree *parse_tree) {
         output = NULL;
         goto end;
     }
-    carnode_val = carnode->val.value.literal;
-    len = length(parse_tree);
 
-    
-    switch (function_list[carnode_val]) {
+    carnode_val = carnode->val.value.literal;
+
+    try {
+        fun_num = function_list.at(carnode_val);
+    } catch (std::exception& e) {
+        output = NULL;
+        cout << "ERROR: FUNCTION '"<< carnode_val << "' not supported.";
+        goto end;
+    }
+
+    switch (fun_num) {
         case 0: // PLUS
             if (len != 3) {
                 output = NULL;
+                cout << "ERROR: PLUS should have two arguments.";
                 goto end;
             }
             s1 = parse_tree->right->left;
             s2 = parse_tree->right->right->left;
             s1 = eval(s1);
             s2 = eval(s2);
+            if (s1 == NULL || s2 == NULL) {
+        //        printf(" Evaluation failed for one of the arguments while doing PLUS.");
+                return NULL;
+            }
+
             output = lisp_plus(s1, s2);
             free(s1);
             free(s2);
@@ -305,12 +351,17 @@ tree* eval(tree *parse_tree) {
         case 1: // MINUS
             if (len != 3) {
                 output = NULL;
+                cout << "ERROR: MINUS should have two arguments.";
                 goto end;
             }
             s1 = parse_tree->right->left;
             s2 = parse_tree->right->right->left;
             s1 = eval(s1);
             s2 = eval(s2);
+            if (s1 == NULL || s2 == NULL) {
+                //printf(" Evaluation failed for one of the arguments while doing MINUS.");
+                return NULL;
+            }
             output = lisp_minus(s1, s2);
             free(s1);
             free(s2);
@@ -319,12 +370,17 @@ tree* eval(tree *parse_tree) {
         case 2: // TIMES
             if (len != 3) {
                 output = NULL;
+                cout << "ERROR: TIMES should have two arguments.";
                 goto end;
             }
             s1 = parse_tree->right->left;
             s2 = parse_tree->right->right->left;
             s1 = eval(s1);
             s2 = eval(s2);
+            if (s1 == NULL || s2 == NULL) {
+                //printf(" Evaluation failed for one of the arguments while doing TIEMS.");
+                return NULL;
+            }
             output = lisp_times(s1, s2);
             free(s1);
             free(s2);
@@ -333,13 +389,18 @@ tree* eval(tree *parse_tree) {
         case 3: // LESS
             if (len != 3) {
                 output = NULL;
+                cout << "ERROR: LESS should have two arguments.";
                 goto end;
             }
             s1 = parse_tree->right->left;
             s2 = parse_tree->right->right->left;
             s1 = eval(s1);
             s2 = eval(s2);
-            output =  lisp_less(s1, s2);
+            if (s1 == NULL || s2 == NULL) {
+            //    printf(" Evaluation failed for one of the arguments while doing LESS.");
+                return NULL;
+            }
+            output = lisp_less(s1, s2);
             free(s1);
             free(s2);
             goto end;
@@ -347,17 +408,25 @@ tree* eval(tree *parse_tree) {
         case 4: // GREATER
             if (len != 3) {
                 output = NULL;
+                cout << "ERROR: GREATER should have two arguments.";
                 goto end;
             }
+            s1 = parse_tree->right->left;
+            s2 = parse_tree->right->right->left;
             s1 = eval(s1);
             s2 = eval(s2);
-            output =  lisp_greater(s1, s2);
+            if (s1 == NULL || s2 == NULL) {
+            //    printf(" Evaluation failed for one of the arguments while doing GREATER.");
+                return NULL;
+            }
+            output = lisp_greater(s1, s2);
             free(s1);
             free(s2);
             goto end;
             break;
         case 5: // EQ
             if (len != 3) {
+                cout << "ERROR: EQ should have two arguments.";
                 output = NULL;
                 goto end;
             }
@@ -365,85 +434,116 @@ tree* eval(tree *parse_tree) {
             s2 = parse_tree->right->right->left;
             s1 = eval(s1);
             s2 = eval(s2);
-            output = eq(s1, s2);
+            if (s1 == NULL || s2 == NULL) {
+            //    printf(" Evaluation failed for one of the arguments while doing EQ.");
+                return NULL;
+            }
+            output = lisp_eq(s1, s2);
             free(s1);
             free(s2);
             goto end;
             break;
         case 6: // Atom
             if (len != 2) {
+                cout << "ERROR: ATOM should have one argument.";
                 output = NULL;
                 goto end;
             }
             s1 = parse_tree->right->left;
             s1 = eval(s1);
-            output =  lisp_atom(s1);
+            if (s1 == NULL) {
+            //    printf(" Evaluation failed for the argument while doing ATOM.");
+                return NULL;
+            }
+            output = lisp_atom(s1);
             free(s1);
             goto end;
             break;
         case 7:// INT
             if (len != 2) {
+                cout << "ERROR: INT should have one argument.";
                 output = NULL;
                 goto end;
             }
             s1 = parse_tree->right->left;
             s1 = eval(s1);
-            output =  checkInt(s1);
+            if (s1 == NULL) {
+                //printf(" Evaluation failed for the argument while doing INT.");
+                return NULL;
+            }
+            output = checkInt(s1);
             free(s1);
             goto end;
             break;
         case 8: // NULL
             if (len != 2) {
+                cout << "ERROR: NULL should have one argument.";
                 output = NULL;
                 goto end;
             }
             s1 = parse_tree->right->left;
+
             s1 = eval(s1);
-            output =  checkNull(s1);
+            if (s1 == NULL) {
+            //    printf(" Evaluation failed for the argument while doing NULL.");
+                return NULL;
+            }
+            output = checkNull(s1);
             free(s1);
             goto end;
             break;
         case 9: // CAR
             if (len != 2) {
+                cout << "ERROR: CAR should have one argument.";
                 output = NULL;
                 goto end;
             }
             s1 = parse_tree->right->left;
             s1 = eval(s1);
-            output =  car(s1);
-            free(s1);
+            if (s1 == NULL) {
+                //cout << " Evaluation failed for the argument while doing CAR.";
+                return NULL;
+            } else if (s1->val.type == LITERAL_ATOM || s1->val.type == NUMERIC_ATOM) {
+                //cout << "ERROR: Evaluation failed as CAR argument is atom.";
+            }
+            output = car(s1);
             goto end;
             break;
         case 10: // CDR
             if (len != 2) {
                 output = NULL;
+                cout << "ERROR: CDR should have one argument.";
                 goto end;
             }
             s1 = parse_tree->right->left;
             s1 = eval(s1);
+            if (s1 == NULL) {
+                //cout << " Evaluation failed for the argument while doing CDR.";
+                return NULL;
+            }
             output = cdr(s1);
-            free(s1);
             goto end;
             break;
         case 11: // CONS
-            cout << "I am suppost";
            if (len != 3) {
+               cout << "ERROR: CONS should have two arguments.";
                 output = NULL;
                 goto end;
             }
             s1 = parse_tree->right->left;
             s2 = parse_tree->right->right->left;
-            cout << "\nSingle ? " << singleNode(s1);
             s1 = eval(s1);
             s2 = eval(s2);
-            cout << "\nSingle ? " << singleNode(s1);
+            if (s1 == NULL || s2 == NULL) {
+            //    printf(" Evaluation failed for one of the arguments while doing CONS.");
+                return NULL;
+            }
             output = cons(s1, s2);
-        //    free(s1);
-        //    free(s2);
             goto end;
             break;
         case 12: // QUOTE
             if (len != 2) {
+                cout << "ERROR: QUOTE should have one argument.";
                 output = NULL;
                 goto end;
             }
@@ -455,9 +555,9 @@ tree* eval(tree *parse_tree) {
             output = lisp_cond(parse_tree->right);
             goto end;
             break;
-
         default:
             output = NULL;
+            cout << "ERROR: ATOM not supported";
             break;
     }
 
@@ -465,6 +565,9 @@ end:
     return (output);
 }
 
+/*
+* Init the function mapping.
+*/
 int init_eval() {
     function_list["PLUS"] = 0;
     function_list["MINUS"] = 1;
@@ -483,35 +586,45 @@ int init_eval() {
     return SUCCESS;
 }
 
+/*
+ * Print the Eval tree.
+*/
 void print_eval_tree(tree *s) {
-
-    if (s == NULL)
+    if (s == NULL) {
+        // Just safe check.
         return;
-    if (singleNode(s) == 1) {
+    }
+
+    if (singleNode(s) == 1) { // Leaf node
         if (s->val.type == NUMERIC_ATOM) {
-            cout << s->val.value.numeric <<" ";
+            cout << s->val.value.numeric;
         } else if (s->val.type == T) {
-            cout << "T ";
+            cout << "T";
         } else if (s->val.type == LITERAL_ATOM) {
-            cout << s->val.value.literal << " ";
+            cout << s->val.value.literal;
         } else {
-            cout << "NIL ";
+            cout << "NIL";
         }
         return;
     } else {
         cout << "(";
         while (singleNode(s) != 1) {
             print_eval_tree(s->left);
+            if (singleNode(s->right) != 1) {
+                //If K < n print a space
+                cout << " ";
+            }
             s = s->right;
         }
-            if (s->val.type == NIL) {
+        if (s->val.type == NIL || (s->val.type == LITERAL_ATOM
+            && s->val.value.literal.compare("NIL") == 0)) {
                 cout << ")";
             } else {
                 cout << " . ";
                 if (s->val.type == NUMERIC_ATOM) {
                     cout << s->val.value.numeric;
                 } else if (s->val.type == T) {
-                    cout << "T ";
+                    cout << "T";
                 } else if (s->val.type == LITERAL_ATOM) {
                     cout << s->val.value.literal;
                 }

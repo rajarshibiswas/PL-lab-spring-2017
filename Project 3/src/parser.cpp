@@ -161,15 +161,16 @@ int parseStart(Scanner *scan) {
             parseError(scan);
             break;
         }
-        //clecout << "out of parseExpr\n";
-        parse_tree_print(parse_tree);
+    //    parse_tree_print(parse_tree);
         parse_tree = eval(parse_tree);
-    //cout << "\nTHE result : "<<parse_tree->val.value.numeric << "\n";
-        print_eval_tree(parse_tree);
-
-        // Evaluate this parse tree now.
-
-        // Free the parse tree.
+        if (parse_tree == NULL) {
+            cout << "\n";
+            error = EVAL_ERROR;
+            break;
+        } else {
+            print_eval_tree(parse_tree);
+        }
+        free(parse_tree);
         cout << "\n";
     } while (scan->getCurrent().type != END_OF_FILE);
 
