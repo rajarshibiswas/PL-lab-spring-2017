@@ -148,11 +148,11 @@ static tree* lisp_eq(tree *s1, tree *s2) {
 
 static tree* lisp_plus(tree *s1, tree *s2) {
     if (singleNode(s1) == 0 || singleNode(s1) == 0) {
-        cout << "Error: One of the arguments for PLUS is not Numeric ATOM.";
+        cout << "ERROR: One of the arguments for PLUS is not Numeric ATOM.";
         return NULL;
     }
     if ((numericNode(s1) == 0) || (numericNode(s2) == 0)) {
-            cout << "Error: One of the arguments for PLUS is not Numeric ATOM.";
+            cout << "ERROR: One of the arguments for PLUS is not Numeric ATOM.";
             return NULL;
     }
     tree *s = newNode();
@@ -164,11 +164,11 @@ static tree* lisp_plus(tree *s1, tree *s2) {
 
 static tree* lisp_minus(tree *s1, tree *s2) {
     if ((singleNode(s1) == 0) || (singleNode(s2) == 0)) {
-        cout << "Error: One of the arguments for MINUS is not Numeric ATOM.";
+        cout << "ERROR: One of the arguments for MINUS is not Numeric ATOM.";
         return NULL;
     }
     if ((numericNode(s1) == 0) || (numericNode(s2) == 0)) {
-        cout << "Error: One of the arguments for MINUS is not Numeric ATOM.";
+        cout << "ERROR: One of the arguments for MINUS is not Numeric ATOM.";
         return NULL;
     }
     tree *s = newNode();
@@ -180,11 +180,11 @@ static tree* lisp_minus(tree *s1, tree *s2) {
 
 static tree* lisp_times(tree *s1, tree *s2) {
     if ((singleNode(s1) == 0) || (singleNode(s2) == 0)) {
-        cout << "Error: One of the arguments for TIMES is not Numeric ATOM.";
+        cout << "ERROR: One of the arguments for TIMES is not Numeric ATOM.";
         return NULL;
     }
     if ((numericNode(s1) == 0) || (numericNode(s2) == 0)) {
-        cout << "Error: One of the arguments for TIMES is not Numeric ATOM.";
+        cout << "ERROR: One of the arguments for TIMES is not Numeric ATOM.";
         return NULL;
     }
 
@@ -196,11 +196,11 @@ static tree* lisp_times(tree *s1, tree *s2) {
 
 static tree* lisp_less(tree *s1, tree *s2) {
     if ((singleNode(s1) == 0) || (singleNode(s2) == 0)) {
-        cout << "Error: One of the arguments for LESS is not Numeric ATOM.";
+        cout << "ERROR: One of the arguments for LESS is not Numeric ATOM.";
         return NULL;
     }
     if ((numericNode(s1) == 0) || (numericNode(s2) == 0)) {
-        cout << "Error: One of the arguments for LESS is not Numeric ATOM.";
+        cout << "ERROR: One of the arguments for LESS is not Numeric ATOM.";
         return NULL;
     }
 
@@ -215,11 +215,11 @@ static tree* lisp_less(tree *s1, tree *s2) {
 
 static tree* lisp_greater(tree *s1, tree *s2) {
     if ((singleNode(s1) == 0) || (singleNode(s2) == 0)) {
-        cout << "Error: One of the arguments for GREATER is not Numeric ATOM.";
+        cout << "ERROR: One of the arguments for GREATER is not Numeric ATOM.";
         return NULL;
     }
     if ((numericNode(s1) == 0) || (numericNode(s2) == 0)) {
-        cout << "Error: One of the arguments for GREATER is not Numeric ATOM.";
+        cout << "ERROR: One of the arguments for GREATER is not Numeric ATOM.";
         return NULL;
     }
 
@@ -306,7 +306,7 @@ tree* eval(tree *parse_tree) {
     len = length(parse_tree);
     if (len < 2) {
         output = NULL;
-        cout << "Error: The S expression is not supported.";
+        cout << "ERROR: The S expression is not supported.";
         goto end;
     }
 
