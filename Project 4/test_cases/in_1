@@ -1,0 +1,1 @@
+( CONS ( CAR (QUOTE(7 10))) (CDR (QUOTE(7 10))))
