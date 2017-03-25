@@ -1,0 +1,2 @@
+(DEFUN F (X) (PLUS X 10))
+(F 6)

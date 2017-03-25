@@ -22,7 +22,8 @@ typedef enum token_type {
     END_OF_FILE,
     NIL,
     EMPTY, // No value
-    T
+    T,
+    USER_DEF_FUN,
 } token_type;
 
 // Different values that a token can take.

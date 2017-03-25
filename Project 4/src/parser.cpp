@@ -152,8 +152,18 @@ static void parseError(Scanner *scan) {
  */
 int parseStart(Scanner *scan) {
     int error = SUCCESS;
+
+    tree *d; // d list
+    tree *a; // a list
+
+    d = newNode();
+    d->val.type = NIL;
+
     init_eval();
     do {
+        a = newNode();
+        a->val.type = NIL;
+
         tree *parse_tree;
         parse_tree = parseExpr(scan);
         if (parse_tree == NULL) {
@@ -161,8 +171,12 @@ int parseStart(Scanner *scan) {
             parseError(scan);
             break;
         }
-    //    parse_tree_print(parse_tree);
-        parse_tree = eval(parse_tree);
+        parse_tree_print(parse_tree);
+        cout << "\n";
+
+        parse_tree = eval(parse_tree, a, d);
+        //parse_tree_print(d);
+
         if (parse_tree == NULL) {
             cout << "\n";
             error = EVAL_ERROR;

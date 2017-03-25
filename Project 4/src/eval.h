@@ -12,7 +12,7 @@
 
 using namespace std;
 
-tree* eval(tree *parse_tree);
+tree* eval(tree *parse_tree, tree *a, tree *d);
 int init_eval();
 void print_eval_tree(tree* s);
  #endif
