@@ -1,1 +1,1 @@
-(COND ((LESS 7 4) 2) (4 (PLUS 4 6)))
+(COND ((LESS 7 4) 2) ((GREATER 5 5 ) (PLUS 4 6)))

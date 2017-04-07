@@ -1,0 +1,6 @@
+(DEFUN F () NIL)
+(F)
+
+(DEFUN G () ())
+(G)
+(F(G))
