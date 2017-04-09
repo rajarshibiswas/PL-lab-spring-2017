@@ -1,6 +1,6 @@
 /*
  * CSE 6341
- * Project: 4
+ * Project: 2
  * File	  : scanner.h
  * Author : Rajarshi Biswas
  * Email  : biswas.91@osu.edu
@@ -22,8 +22,7 @@ typedef enum token_type {
     END_OF_FILE,
     NIL,
     EMPTY, // No value
-    T,
-    USER_DEF_FUN,
+    T
 } token_type;
 
 // Different values that a token can take.

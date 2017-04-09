@@ -1,6 +1,6 @@
 /*
  * CSE 6341
- * Project: 4
+ * Project: 2
  * File	  : parser.h
  * Author : Rajarshi Biswas
  * Email  : biswas.91@osu.edu
@@ -19,7 +19,6 @@ typedef struct tree {
 } tree;
 
 int parseStart(Scanner *scan);
-//void parse_tree_print(tree *t);
 tree* newNode();
 
 #endif

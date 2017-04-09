@@ -1,6 +1,6 @@
 /*
  * CSE 6341
- * Project: 4
+ * Project: 2
  * File	  : parser.cpp
  * Author : Rajarshi Biswas
  * Email  : biswas.91@osu.edu
@@ -85,8 +85,6 @@ static tree* parseExpr(Scanner *scan) {
             node = node->right;
         }
         scan->moveToNext(); // Consume closing parenthesis.
-        if (head->val.type == EMPTY)
-            head->val.type = NIL;
         return head;
     } else {
         goto error;
@@ -154,17 +152,8 @@ static void parseError(Scanner *scan) {
  */
 int parseStart(Scanner *scan) {
     int error = SUCCESS;
-
-
-    tree *a; // a list
-
-
-
     init_eval();
     do {
-        a = newNode();
-        a->val.type = NIL;
-
         tree *parse_tree;
         parse_tree = parseExpr(scan);
         if (parse_tree == NULL) {
@@ -172,12 +161,8 @@ int parseStart(Scanner *scan) {
             parseError(scan);
             break;
         }
-        //parse_tree_print(parse_tree);
-        //cout << "\n";
-
-        parse_tree = eval(parse_tree, a);
-
-        //parse_tree_print(d);
+    //    parse_tree_print(parse_tree);
+        parse_tree = eval(parse_tree);
         if (parse_tree == NULL) {
             cout << "\n";
             error = EVAL_ERROR;

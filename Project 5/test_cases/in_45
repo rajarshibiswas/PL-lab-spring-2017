@@ -1,2 +1,0 @@
-(DEFUN F NIL (NULL NIL))
-(F)

@@ -1,3 +1,2 @@
 (DEFUN F NIL (PLUS 9 8))
 (F)
-(ATOM NIL)

@@ -1,3 +1,0 @@
-(DEFUN COMBINE (E) (COND ((ATOM E) E) ((EQ (COMBINE (CAR E)) 0) (COMBINE (CAR (CDR E)))) (T (COMBINE (CAR (CDR (CDR E)))))))
-(COMBINE (QUOTE ( (1 2 0) (3 4 5) (6 2 8))))
-

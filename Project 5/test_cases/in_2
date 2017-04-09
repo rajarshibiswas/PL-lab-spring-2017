@@ -1,4 +1,4 @@
-(PLUS 4 6)
+(PLUS (PLUS (QUOTE (3 4)) 4) 6)
 (CDR (QUOTE (A)))
 (CAR (QUOTE (4 5)))
 (CONS 3 (QUOTE (5 7)))
@@ -13,6 +13,7 @@
 
 
 Negative TEST case:
+
 ATOM (CDR (QUOTE (3 4)))
 (QUOTE (QUOTE (3 4)))
 (PLUS 5 T)
